@@ -42,33 +42,27 @@ namespace SeedPeeker
             Recurse(null, 0, 0);
         }
 
-        public static UnlockChain Recurse(Unlock unlock, int step, int index, HashSet<int> ids = null)
+        public static UnlockChain Recurse(UnlockChain chain, Unlock unlock, int step, int index)
         {
-            if (ids == null)
-            {
-                ids = new HashSet<int>();
-            }
-
             UnlockChain chain = new UnlockChain()
             {
                 Step = step,
                 Index = index,
                 Unlock = unlock,
-                CurrentUnlockIDs = ids,
+
             };
-            if (unlock != null)
-                chain.CurrentUnlockIDs.Add(chain.Unlock.ID);
 
             if(step < 3)
             {
-                CurrentUnlockIDs = chain.CurrentUnlockIDs;
                 Unlock[] unlocks = GetNextUnlocks();
 
-                chain.Chain1 = Recurse(unlocks[0], 1, index * 2, chain.CurrentUnlockIDs);
-                chain.Chain2 = Recurse(unlocks[1], 1, index * 2 + 1, chain.CurrentUnlockIDs);
+                chain.Chain1 = Recurse(chain, unlocks[0], 1, index * 2);
+                chain.Chain2 = Recurse(chain, unlocks[1], 1, index * 2 + 1);
             }
-
-            return chain;
+            else
+            {
+                return chain;
+            }
         }
 
         public static Unlock[] GetNextUnlocks()
